@@ -29,12 +29,12 @@ class TheServiceProvider extends ServiceProvider {
                 __DIR__ . '/resources/config/themes.php' => config_path('semok/themes.php'),
             ], 'semok.config');
             $this->commands([
-                \Semok\Support\Theme\Commands\listThemes::class,
-                \Semok\Support\Theme\Commands\createTheme::class,
-                \Semok\Support\Theme\Commands\removeTheme::class,
-                \Semok\Support\Theme\Commands\createPackage::class,
-                \Semok\Support\Theme\Commands\installPackage::class,
-                \Semok\Support\Theme\Commands\refreshCache::class,
+                Commands\ListThemes::class,
+                Commands\CreateTheme::class,
+                Commands\RemoveTheme::class,
+                Commands\CreatePackage::class,
+                Commands\InstallPackage::class,
+                Commands\RefreshCache::class,
             ]);
         }
         $themes = $this->app->make('semok.themes');
