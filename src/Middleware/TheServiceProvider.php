@@ -19,7 +19,9 @@ class TheServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/resources/config/middleware.php' => config_path('semok/middleware.php'),
+                __DIR__ . '/resources/config/domainfilter.php' => config_path('semok/middleware/domainfilter.php'),
+                __DIR__ . '/resources/config/pagespeed.php' => config_path('semok/middleware/pagespeed.php'),
+                __DIR__ . '/resources/config/responsecache.php' => config_path('semok/middleware/responsecache.php'),
             ], 'semok.config');
         }
     }
@@ -29,8 +31,12 @@ class TheServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/resources/config/middleware.php', 'semok.middleware');
-        $middlewares = [];
+        $this->mergeConfigFrom(__DIR__ . '/resources/config/domainfilter.php', 'semok.middleware.domainfilter');
+        $this->mergeConfigFrom(__DIR__ . '/resources/config/pagespeed.php', 'semok.middleware.pagespeed');
+        $this->mergeConfigFrom(__DIR__ . '/resources/config/responsecache.php', 'semok.middleware.responsecache');
+        $middlewares = [
+            DomainFilter::class
+        ];
         if ($this->app['config']->get('semok.middleware.responsecache.enabled')) {
             $this->app->register(new ResponseCache\TheServiceProvider($this->app));
             $middlewares[] = ResponseCache\Middlewares\CacheResponse::class;
@@ -45,16 +51,12 @@ class TheServiceProvider extends ServiceProvider
                 'remove-quotes' => \RenatoMarinho\LaravelPageSpeed\Middleware\RemoveQuotes::class,
                 'collapse-whitespace' => \RenatoMarinho\LaravelPageSpeed\Middleware\CollapseWhitespace::class
             ];
-            $mg = config('laravel-page-speed.groups',[]);
+            $mg = config('laravel-page-speed.enabled',[]);
             foreach ($groups as $key => $value) {
                 if (in_array($key, $mg)) {
                     $middlewares[] = $value;
                 }
             }
-        }
-
-        if(!is_array($middlewares) || empty($middlewares)){
-            return;
         }
         $router = $this->app['router'];
         $router->middlewareGroup('public', $middlewares);
@@ -63,13 +65,14 @@ class TheServiceProvider extends ServiceProvider
     protected function registerPageSpeedMiddleware()
     {
         $pagespeed = $this->app['config']->get('semok.middleware.pagespeed');
-        if(!$pagespeed['enabled']){
+        if (!isset($pagespeed['enabled']) || !is_array($pagespeed['enabled']) || empty($pagespeed['enabled'])){
             return false;
         }
+
         $pagespeed['enable'] = true;
         $this->app['config']->set(
             'laravel-page-speed',
-            $this->app['config']->get('semok.middleware.pagespeed', [])
+            $pagespeed
         );
         $this->app->register(new \RenatoMarinho\LaravelPageSpeed\ServiceProvider($this->app));
         return true;

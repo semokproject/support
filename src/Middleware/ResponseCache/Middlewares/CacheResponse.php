@@ -23,8 +23,6 @@ class CacheResponse
     {
         if ($this->responseCache->enabled($request)) {
             if ($this->responseCache->hasBeenCached($request)) {
-                event(new ResponseCacheHit($request));
-
                 return $this->responseCache->getCachedResponseFor($request);
             }
         }
@@ -36,9 +34,6 @@ class CacheResponse
                 $this->responseCache->cacheResponse($request, $response, $lifetimeInMinutes);
             }
         }
-
-        event(new CacheMissed($request));
-
         return $response;
     }
 }
