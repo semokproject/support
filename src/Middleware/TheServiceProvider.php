@@ -59,7 +59,7 @@ class TheServiceProvider extends ServiceProvider
             }
         }
         $router = $this->app['router'];
-        $router->middlewareGroup('public', $middlewares);
+        $router->middlewareGroup('semok', $middlewares);
     }
 
     protected function registerPageSpeedMiddleware()
