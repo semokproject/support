@@ -2,7 +2,7 @@
 
 namespace Semok\Support\Theme\Commands;
 
-use Theme;
+use SemokTheme;
 use Illuminate\Console\Command;
 use Semok\Support\Theme\Manifest;
 use Illuminate\Filesystem\Filesystem as File;
@@ -45,7 +45,6 @@ class InstallPackage extends BaseCommand
 
         // Target Paths
         $viewsPath = themes_path($themeJson->get('views-path'));
-        $assetPath = public_path($themeJson->get('asset-path'));
 
         // If Views+Asset paths don't exist, move theme from temp to target paths
         if (file_exists($viewsPath)) {
@@ -59,15 +58,8 @@ class InstallPackage extends BaseCommand
             $this->info("Theme views installed to path [$viewsPath]");
         }
 
-        if (file_exists($assetPath)) {
-            $this->error("Error: Asset path [$assetPath] already exists. Will not be installed.");
-        } else {
-            exec("mv {$this->tempPath}/asset $assetPath");
-            $this->info("Theme assets installed to path [$assetPath]");
-        }
-
         // Rebuild Themes Cache
-        Theme::rebuildCache();
+        SemokTheme::rebuildCache();
 
         // Del Temp Folder
         $this->clearTempFolder();

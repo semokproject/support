@@ -58,9 +58,7 @@ return [
      *    'method' => array('Str','slug'),
      */
 
-    'method' => function( $string, $sep ) {
-        return str_slugify($string, ['lowercase' => false, 'separator' => $sep]);
-    },
+    'method' => 'str_slug',
 
     /**
      * Separator to use when generating slugs.  Defaults to a hyphen.

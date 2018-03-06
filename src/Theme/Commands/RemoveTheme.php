@@ -2,7 +2,7 @@
 
 namespace Semok\Support\Theme\Commands;
 
-use Theme;
+use SemokTheme;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem as File;
 
@@ -18,7 +18,7 @@ class RemoveTheme extends BaseCommand
         if ($themeName == "") {
             $themes = array_map(function($theme){
                 return $theme->name;
-            }, Theme::all());
+            }, SemokTheme::all());
             $themeName = $this->choice('Select a theme to create a distributable package:', $themes);
         }
 
@@ -26,22 +26,20 @@ class RemoveTheme extends BaseCommand
         $force = $this->option('force');
 
         // Check that theme exists
-        if (!Theme::exists($themeName)) {
+        if (!SemokTheme::exists($themeName)) {
             $this->error("Error: Theme $themeName doesn't exist");
             return;
         }
 
         // Get the theme
-        $theme = Theme::find($themeName);
+        $theme = SemokTheme::find($themeName);
 
         // Diaplay Warning
         if (!$force) {
             $viewsPath = themes_path($theme->viewsPath);
-            $assetPath = public_path($theme->assetPath);
 
             $this->info("Warning: These folders will be deleted:");
             $this->info("- views: $viewsPath");
-            $this->info("- asset: $assetPath");
 
             if(!$this->confirm("Continue?"))
                 return;

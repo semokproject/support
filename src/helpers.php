@@ -5,6 +5,12 @@ if (!function_exists('themes_path')) {
     }
 }
 
+if (!function_exists('themes_url')) {
+    function themes_url($filename = null) {
+        return app()->make('semok.themes')->themes_url($filename);
+    }
+}
+
 if (!function_exists('theme_url')) {
     function theme_url($url) {
         return app()->make('semok.themes')->url($url);
@@ -33,7 +39,7 @@ if (!function_exists('str_limit_words')) {
 
 if (!function_exists('str_slugify')) {
 	function str_slugify($string, $options = [], $limit_words = false) {
-		$defaultoptions = ['lowercase' => false, 'rulesets' => ['default']];
+		$defaultoptions = ['lowercase' => false];
 		if (is_array($options)) $options = array_merge($defaultoptions, $options);
 		else $options = $defaultoptions;
 		if ($limit_words) return Slugify::slugify(str_limit_words($string, $limit_words), $options);

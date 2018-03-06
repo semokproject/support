@@ -3,6 +3,16 @@
 namespace Semok\Support\Middleware;
 
 use Illuminate\Support\ServiceProvider;
+use RenatoMarinho\LaravelPageSpeed\Middleware\TrimUrls;
+use RenatoMarinho\LaravelPageSpeed\Middleware\InlineCss;
+use RenatoMarinho\LaravelPageSpeed\Middleware\RemoveQuotes;
+use RenatoMarinho\LaravelPageSpeed\Middleware\RemoveComments;
+use RenatoMarinho\LaravelPageSpeed\Middleware\ElideAttributes;
+use RenatoMarinho\LaravelPageSpeed\Middleware\InsertDNSPrefetch;
+use RenatoMarinho\LaravelPageSpeed\Middleware\CollapseWhitespace;
+use Semok\Support\Middleware\ResponseCache\Middlewares\CacheResponse;
+use RenatoMarinho\LaravelPageSpeed\ServiceProvider as LaravelPageSpeedServiceProvider;
+use Semok\Support\Middleware\ResponseCache\TheServiceProvider as ResponseCacheServiceProvider;
 
 /**
  * Class ServiceProvider
@@ -34,22 +44,20 @@ class TheServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/resources/config/domainfilter.php', 'semok.middleware.domainfilter');
         $this->mergeConfigFrom(__DIR__ . '/resources/config/pagespeed.php', 'semok.middleware.pagespeed');
         $this->mergeConfigFrom(__DIR__ . '/resources/config/responsecache.php', 'semok.middleware.responsecache');
-        $middlewares = [
-            DomainFilter::class
-        ];
+        $middlewares = [DomainFilter::class];
         if ($this->app['config']->get('semok.middleware.responsecache.enabled')) {
-            $this->app->register(new ResponseCache\TheServiceProvider($this->app));
-            $middlewares[] = ResponseCache\Middlewares\CacheResponse::class;
+            $this->app->register(new ResponseCacheServiceProvider($this->app));
+            $middlewares[] = CacheResponse::class;
         }
         if ($pageSpeeds = $this->registerPageSpeedMiddleware()) {
             $groups = [
-                'inline-css' => \RenatoMarinho\LaravelPageSpeed\Middleware\InlineCss::class,
-                'elide-attributes' => \RenatoMarinho\LaravelPageSpeed\Middleware\ElideAttributes::class,
-                'insert-dns-prefetch' => \RenatoMarinho\LaravelPageSpeed\Middleware\InsertDNSPrefetch::class,
-                'remove-comments' => \RenatoMarinho\LaravelPageSpeed\Middleware\RemoveComments::class,
-                'trim-urls' => \RenatoMarinho\LaravelPageSpeed\Middleware\TrimUrls::class,
-                'remove-quotes' => \RenatoMarinho\LaravelPageSpeed\Middleware\RemoveQuotes::class,
-                'collapse-whitespace' => \RenatoMarinho\LaravelPageSpeed\Middleware\CollapseWhitespace::class
+                'trim-urls' => TrimUrls::class,
+                'inline-css' => InlineCss::class,
+                'remove-quotes' => RemoveQuotes::class,
+                'remove-comments' => RemoveComments::class,
+                'elide-attributes' => ElideAttributes::class,
+                'insert-dns-prefetch' => InsertDNSPrefetch::class,
+                'collapse-whitespace' => CollapseWhitespace::class
             ];
             $mg = config('laravel-page-speed.enabled',[]);
             foreach ($groups as $key => $value) {
@@ -65,7 +73,7 @@ class TheServiceProvider extends ServiceProvider
     protected function registerPageSpeedMiddleware()
     {
         $pagespeed = $this->app['config']->get('semok.middleware.pagespeed');
-        if (!isset($pagespeed['enabled']) || !is_array($pagespeed['enabled']) || empty($pagespeed['enabled'])){
+        if (!isset($pagespeed['enabled']) || !is_array($pagespeed['enabled']) || empty($pagespeed['enabled'])) {
             return false;
         }
 
@@ -74,7 +82,7 @@ class TheServiceProvider extends ServiceProvider
             'laravel-page-speed',
             $pagespeed
         );
-        $this->app->register(new \RenatoMarinho\LaravelPageSpeed\ServiceProvider($this->app));
+        $this->app->register(new LaravelPageSpeedServiceProvider($this->app));
         return true;
     }
 }

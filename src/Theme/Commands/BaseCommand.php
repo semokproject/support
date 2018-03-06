@@ -2,7 +2,7 @@
 
 namespace Semok\Support\Theme\Commands;
 
-use Theme;
+use SemokTheme;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 
@@ -49,11 +49,11 @@ class BaseCommand extends Command
 
     protected function themeInstalled($themeName)
     {
-        if (!Theme::exists($themeName)) {
+        if (!SemokTheme::exists($themeName)) {
             return false;
         }
 
-        $viewsPath = Theme::find($themeName)->viewsPath;
+        $viewsPath = SemokTheme::find($themeName)->viewsPath;
         return $this->files->exists(themes_path("$viewsPath/theme.json"));
     }
 }

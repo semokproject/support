@@ -2,9 +2,13 @@
 
 namespace Semok\Support\Theme\Exceptions;
 
-class ThemeNotFound extends \Exception{
+use Semok\Support\Exceptions\RuntimeException;
 
-	public function __construct($themeName) {
+class ThemeNotFound extends RuntimeException
+{
+
+	public function __construct($themeName)
+	{
 		parent::__construct("Theme $themeName not Found", 1);
 	}
 

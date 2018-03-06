@@ -2,7 +2,7 @@
 
 namespace Semok\Support\Theme\Commands;
 
-use Theme;
+use SemokTheme;
 use Illuminate\Console\Command;
 use Semok\Support\Theme\Manifest;
 
@@ -33,18 +33,16 @@ class CreateTheme extends BaseCommand
 
         // Read theme paths
         $viewsPath = $this->anticipate("Where will views be located [Default='$themeName']?", [$themeName]);
-        $assetPath = $this->anticipate("Where will assets be located [Default='$themeName']?", [$themeName]);
 
         // Calculate Absolute paths
         $viewsPathFull = themes_path($viewsPath);
-        $assetPathFull = public_path($assetPath);
 
         // Ask for parent theme
         $parentTheme = "";
         if ($this->confirm('Extends an other theme?')) {
             $themes = array_map(function($theme){
                 return $theme->name;
-            }, Theme::all());
+            }, SemokTheme::all());
             $parentTheme = $this->choice('Which one', $themes);
         }
 
@@ -54,7 +52,6 @@ class CreateTheme extends BaseCommand
         $this->info("Summary:");
         $this->info("- Theme name: ".$themeName);
         $this->info("- Views Path: ".$viewsPathFull);
-        $this->info("- Asset Path: ".$assetPathFull);
         $this->info("- Extends Theme: ".($parentTheme ?: "No"));
 
         if (!empty($customConfiguration)) {
@@ -69,18 +66,16 @@ class CreateTheme extends BaseCommand
             $themeJson = new Manifest(array_merge([
                 "name"        => $themeName,
                 "extends"     => $parentTheme,
-                "asset-path"  => $assetPath,
                 // "views-path"  => $viewsPath,
             ], $customConfiguration));
 
             // Create Paths + copy theme.json
             $this->files->makeDirectory($viewsPathFull);
-            $this->files->makeDirectory($assetPathFull);
 
             $themeJson->saveToFile(themes_path("$viewsPath/theme.json"));
 
             // Rebuild Themes Cache
-            Theme::rebuildCache();
+            SemokTheme::rebuildCache();
         }
     }
 

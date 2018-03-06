@@ -4,6 +4,8 @@ namespace Semok\Support;
 
 use Cocur\Slugify\Slugify;
 use Illuminate\Support\ServiceProvider;
+use Semok\Support\Sluggable\TheServiceProvider as SluggableServiceProvider;
+use Semok\Support\Rememberable\Commands\Clear;
 
 class TheServiceProvider extends ServiceProvider
 {
@@ -21,6 +23,7 @@ class TheServiceProvider extends ServiceProvider
                 __DIR__ . '/../resources/config/site.php' => config_path('semok/site.php'),
             ], 'semok.config');
         }
+        $this->commands([Clear::class]);
     }
 
     /**
@@ -30,6 +33,6 @@ class TheServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->register(new Sluggable\TheServiceProvider($this->app));
+        $this->app->register(new SluggableServiceProvider($this->app));
     }
 }

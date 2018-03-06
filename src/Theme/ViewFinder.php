@@ -2,16 +2,18 @@
 
 namespace Semok\Support\Theme;
 
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\View\FileViewFinder;
+use SemokTheme;
 use Illuminate\Support\Arr;
+use Illuminate\View\FileViewFinder;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Config;
 
-class ViewFinder extends FileViewFinder {
+class ViewFinder extends FileViewFinder
+{
 
     public function __construct(Filesystem $files, array $paths, array $extensions = null)
     {
-        $this->themeEngine = \App::make('semok.themes');
+        $this->themeEngine = app()->make('semok.themes');
         parent::__construct($files, $paths, $extensions);
     }
 
@@ -53,12 +55,12 @@ class ViewFinder extends FileViewFinder {
         // replace with the value of $pathsMap array
         $themeSubPaths = [];
         foreach ($paths as $path) {
-            $pathRelativeToApp = substr($path, strlen(base_path())+1);
+            $pathRelativeToApp = substr($path, strlen(base_path()) + 1);
             // Ignore paths in composer installed packages (paths inside vendor folder)
-            if(strpos($pathRelativeToApp,'vendor')!==0){
+            if (strpos($pathRelativeToApp,'vendor') !== 0) {
                 // Remap paths definded int $pathsMap array
                 foreach ($pathsMap as $key => $value) {
-                    if(strpos($pathRelativeToApp, $key)===0){
+                    if (strpos($pathRelativeToApp, $key) === 0) {
                         $pathRelativeToApp = str_replace($key, $value, $pathRelativeToApp);
                         break;
                     }
@@ -69,7 +71,7 @@ class ViewFinder extends FileViewFinder {
 
         // Prepend current theme's view path to the remaped paths
         $newPaths = [];
-        $searchPaths = array_diff($this->paths, \Theme::getLaravelViewPaths());
+        $searchPaths = array_diff($this->paths, SemokTheme::getLaravelViewPaths());
         foreach ($searchPaths as $path1) {
             foreach ($themeSubPaths as $path2) {
                 $newPaths[] = $path1.'/'.$path2;
@@ -98,11 +100,11 @@ class ViewFinder extends FileViewFinder {
         $this->hints[$namespace] = (array) $hints;
 
         // Overide Error Pages
-        if($namespace == 'errors' || $namespace == 'mails'){
+        if ($namespace == 'errors' || $namespace == 'mails') {
 
-            $searchPaths = array_diff($this->paths, \Theme::getLaravelViewPaths());
+            $searchPaths = array_diff($this->paths, SemokTheme::getLaravelViewPaths());
 
-            $addPaths = array_map(function($path) use ($namespace){
+            $addPaths = array_map(function($path) use ($namespace) {
                 return "$path/$namespace";
             }, $searchPaths);
 
@@ -115,15 +117,16 @@ class ViewFinder extends FileViewFinder {
      *
      * @param  array  $paths
      */
-    public function setPaths($paths){
+    public function setPaths($paths)
+    {
         $this->paths = $paths;
     }
 
     /**
      * Get the array of paths wherew the views are being searched.
      */
-    public function getPaths(){
+    public function getPaths()
+    {
         return $this->paths;
     }
-
 }

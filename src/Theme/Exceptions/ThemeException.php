@@ -2,15 +2,17 @@
 
 namespace Semok\Support\Theme\Exceptions;
 
-/**
- * Define a custom exception class
- */
-class ThemeException extends \Exception{
+use SemokTheme;
+use Semok\Support\Exceptions\RuntimeException;
+
+class ThemeException extends RuntimeException
+{
 
 	// Redefine the exception so message isn't optional
-	public function __construct($message, $code = 0, Exception $previous = null) {
+	public function __construct($message, $code = 0, Exception $previous = null)
+	{
 
-		$message .= ", Current Theme: [".\Theme::get()."]";
+		$message .= ", Current Theme: [" . SemokTheme::get() . "]";
 
 		// make sure everything is assigned properly
 		parent::__construct($message, $code, $previous);

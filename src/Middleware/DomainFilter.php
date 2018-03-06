@@ -2,19 +2,19 @@
 
 namespace Semok\Support\Middleware;
 
-use Closure;
 use Config;
+use Closure;
 use \Illuminate\Http\Request;
 
 class DomainFilter
 {
     /**
-    * Handle an incoming request.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  \Closure  $next
-    * @return mixed
-    */
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
+     */
     public function handle(Request $request, Closure $next)
     {
         $host = $request->header('host');

@@ -2,7 +2,7 @@
 
 namespace Semok\Support\Theme\Commands;
 
-use Theme;
+use SemokTheme;
 use Illuminate\Console\Command;
 
 class RefreshCache extends BaseCommand
@@ -13,7 +13,7 @@ class RefreshCache extends BaseCommand
     public function handle()
     {
         // Rebuild Themes Cache
-        Theme::rebuildCache();
+        SemokTheme::rebuildCache();
 
         $this->info("Themes cache was refreshed. Currently theme caching is: " . (Theme::cacheEnabled() ? "ENABLED" : "DISABLED"));
     }

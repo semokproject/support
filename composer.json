@@ -40,15 +40,22 @@
     "extra": {
         "laravel": {
             "dont-discover": [
-                "renatomarinho/laravel-page-speed",
-                "yajra/laravel-datatables-oracle"
+                "renatomarinho/laravel-page-speed"
             ],
             "providers": [
+                "Cocur\\Slugify\\Bridge\\Laravel\\SlugifyServiceProvider",
                 "Semok\\Support\\TheServiceProvider",
-                "Cocur\\Slugify\\Bridge\\Laravel\\SlugifyServiceProvider"
+                "Semok\\Support\\Cache\\TheServiceProvider",
+                "Semok\\Support\\Log\\TheServiceProvider",
+                "Semok\\Support\\Middleware\\TheServiceProvider",
+                "Semok\\Support\\Sluggable\\TheServiceProvider",
+                "Semok\\Support\\Theme\\TheServiceProvider"
             ],
             "aliases": {
-                "Slugify": "Cocur\\Slugify\\Bridge\\Laravel\\SlugifyFacade"
+                "Slugify": "Cocur\\Slugify\\Bridge\\Laravel\\SlugifyFacade",
+                "SemokCache": "Semok\\Support\\Cache\\TheFacade",
+                "SemokLog": "Semok\\Support\\Log\\TheFacade",
+                "SemokTheme": "Semok\\Support\\Theme\\TheFacade"
             }
         },
         "branch-alias": {

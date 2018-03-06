@@ -2,8 +2,6 @@
 
 namespace Semok\Support\Rememberable;
 
-use Semok\Support\Rememberable\Query\Builder;
-
 trait Rememberable
 {
     /**
@@ -17,7 +15,7 @@ trait Rememberable
 
         $grammar = $conn->getQueryGrammar();
 
-        $builder = new Builder($conn, $grammar, $conn->getPostProcessor());
+        $builder = new QueryBuilder($conn, $grammar, $conn->getPostProcessor());
 
         if (isset($this->rememberFor)) {
             $builder->remember($this->rememberFor);

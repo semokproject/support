@@ -2,6 +2,7 @@
 
 namespace Semok\Support\Middleware\ResponseCache\Commands;
 
+use File;
 use Illuminate\Console\Command;
 use Semok\Support\Middleware\ResponseCache\ResponseCacheRepository;
 
@@ -13,8 +14,12 @@ class Clear extends Command
 
     public function handle(ResponseCacheRepository $cache)
     {
-        $cache->clear();
-
-        $this->info('Response cache cleared!');
+        $directories = File::directories(storage_path('semok/cache'));
+        foreach ($directories as $directory) {
+            if (File::exists($directory . '/response')) {
+                File::deleteDirectory($directory . '/response');
+            }
+        }
+        $this->info('Responcecache cleared');
     }
 }

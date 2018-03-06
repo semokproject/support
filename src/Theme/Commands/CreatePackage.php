@@ -2,7 +2,7 @@
 
 namespace Semok\Support\Theme\Commands;
 
-use Theme;
+use SemokTheme;
 use Illuminate\Console\Command;
 use Semok\Support\Theme\Manifest;
 
@@ -18,13 +18,12 @@ class CreatePackage extends BaseCommand
         if ($themeName == "") {
             $themes = array_map(function($theme) {
                 return $theme->name;
-            }, Theme::all());
+            }, SemokTheme::all());
             $themeName = $this->choice('Select a theme to create a distributable package:', $themes);
         }
-        $theme = Theme::find($themeName);
+        $theme = SemokTheme::find($themeName);
 
         $viewsPath = themes_path($theme->viewsPath);
-        $assetPath = public_path($theme->assetPath);
 
         // Packages storage path
         $packagesPath = $this->packagesPath();
@@ -42,7 +41,6 @@ class CreatePackage extends BaseCommand
 
         // Copy Views+Assets to Temp Folder
         system("cp -r $viewsPath {$this->tempPath}/views");
-        system("cp -r $assetPath {$this->tempPath}/asset");
 
         // Add viewsPath into theme.json file
         $themeJson = new Manifest();

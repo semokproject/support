@@ -1,10 +1,11 @@
 <?php
 
-namespace Semok\Support\Rememberable\Query;
+namespace Semok\Support\Rememberable;
 
 use DateTime;
+use Illuminate\Database\Query\Builder;
 
-class Builder extends \Illuminate\Database\Query\Builder
+class QueryBuilder extends Builder
 {
     /**
      * The key that should be used when caching the query.
@@ -25,7 +26,7 @@ class Builder extends \Illuminate\Database\Query\Builder
      *
      * @var array
      */
-    protected $cacheTags;
+    protected $cacheTags = ['rememberable'];
 
     /**
      * The cache driver to be used.
@@ -142,7 +143,9 @@ class Builder extends \Illuminate\Database\Query\Builder
      */
     public function cacheTags($cacheTags)
     {
-        $this->cacheTags = $cacheTags;
+        if (is_array($cacheTags)) {
+            $this->cacheTags = array_merge($this->cacheTags, $cacheTags);
+        }
 
         return $this;
     }
@@ -167,7 +170,7 @@ class Builder extends \Illuminate\Database\Query\Builder
      */
     protected function getCache()
     {
-        $cache = $this->getCacheDriver();
+        $cache = $this->getCacheManager();
 
         return $this->cacheTags ? $cache->tags($this->cacheTags) : $cache;
     }
@@ -177,9 +180,18 @@ class Builder extends \Illuminate\Database\Query\Builder
      *
      * @return \Illuminate\Cache\CacheManager
      */
-    protected function getCacheDriver()
+    protected function getCacheManager()
     {
-        return app('cache')->driver($this->cacheDriver);
+        if (!$this->cacheDriver) {
+            $this->cacheDriver = config('cache.default', 'file');
+        }
+        $cache = app('cache');
+
+        if ( ! method_exists($cache->getStore(), 'tags')) {
+            $this->cacheTags = null;
+            $cache = app('semok.cache')->dir(config('semok.middleware.domainfilter.domain', 'default') . '/rememberable');
+        }
+        return $cache;
     }
 
     /**
@@ -222,7 +234,7 @@ class Builder extends \Illuminate\Database\Query\Builder
      */
     public function flushCache($cacheTags = null)
     {
-        $cache = $this->getCacheDriver();
+        $cache = $this->getCacheManager();
 
         if ( ! method_exists($cache, 'tags')) {
             return false;

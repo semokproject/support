@@ -2,9 +2,13 @@
 
 namespace Semok\Support\Theme\Exceptions;
 
-class ThemeAlreadyExists extends \Exception{
+use Semok\Support\Exceptions\RuntimeException;
 
-	public function __construct($theme) {
+class ThemeAlreadyExists extends RuntimeException
+{
+
+	public function __construct($theme)
+	{
 		parent::__construct("Theme {$theme->name} already exists", 1);
 	}
 

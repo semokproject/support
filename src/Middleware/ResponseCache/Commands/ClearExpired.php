@@ -4,8 +4,7 @@ namespace Semok\Support\Middleware\ResponseCache\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Config;
-use Storage;
+use File;
 use Exception;
 
 class ClearExpired extends Command
@@ -14,19 +13,26 @@ class ClearExpired extends Command
 
     protected $description = 'Clear all expired response cache';
 
+    protected $expired_file_count = 0;
+    protected $active_file_count = 0;
+
     public function handle()
     {
-        $cacheDisk = [
-            'driver' => 'local',
-            'root' => config('cache.stores.responsecache.path')
-        ];
-        Config::set('filesystems.disks.responsecache', $cacheDisk);
-        $expired_file_count = 0;
-        $active_file_count = 0;
+        $directories = File::directories(storage_path('semok/cache'));
+        foreach ($directories as $directory) {
+            if (File::exists($directory . '/response')) {
+                $this->deleteExpired($directory . '/response');
+            }
+        }
 
+        $this->line('Total expired responsecache files removed: ' . $this->expired_file_count);
+        $this->line('Total active responsecache files remaining: ' . $this->active_file_count);
+    }
+
+    protected function deleteExpired($dir)
+    {
         // Grab the cache files
-        $files = Storage::disk('responsecache')->allFiles();
-
+        $files = File::allFiles($dir);
         // Loop the files and get rid of any that have expired
         foreach ($files as $key => $cachefile) {
             // Ignore this file
@@ -36,7 +42,7 @@ class ClearExpired extends Command
 
             try {
                 // Grab the contents of the file
-                $contents = Storage::disk('responsecache')->get($cachefile);
+                $contents = File::get($cachefile);
 
                 // Get the expiration time
                 $expire = substr($contents, 0, 10);
@@ -45,23 +51,20 @@ class ClearExpired extends Command
                 if (time() >= $expire) {
                     // Delete the file
                     $dirName = substr($cachefile, 0, 2);
-                    if (Storage::disk('responsecache')->exists($dirName)) {
-                        Storage::disk('responsecache')->deleteDirectory($dirName);
+                    if (File::exists($dirName)) {
+                        File::deleteDirectory($dirName);
                     } else {
-                        Storage::disk('responsecache')->delete($cachefile);
+                        File::delete($cachefile);
                     }
 
-                    $expired_file_count++;
+                    $this->expired_file_count++;
                 } else {
-                    $active_file_count++;
+                    $this->active_file_count++;
                 }
             } catch(FileNotFoundException $e) {
                 // Getting an occasional error of this type on the 'get' command above,
                 // so adding a try-catch to skip the file if we do.
             }
         }
-
-        $this->line('Total expired responsecache files removed: ' . $expired_file_count);
-        $this->line('Total active responsecache files remaining: ' . $active_file_count);
     }
 }

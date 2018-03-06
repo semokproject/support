@@ -2,9 +2,9 @@
 
 namespace Semok\Support\Middleware\ResponseCache\Exceptions;
 
-use Exception;
+use Semok\Support\Exceptions\RuntimeException;
 
-class CouldNotUnserialize extends Exception
+class CouldNotUnserialize extends RuntimeException
 {
     public static function serializedResponse(string $serializedResponse): self
     {
