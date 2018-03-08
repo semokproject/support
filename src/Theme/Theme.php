@@ -33,7 +33,7 @@ class Theme {
             if (substr($theme->viewsPath, 0, 1) === DIRECTORY_SEPARATOR) {
                 $path = base_path(substr($theme->viewsPath, 1));
             } else {
-                $path = themes_path($theme->viewsPath);
+                $path = semok_themes_path($theme->viewsPath);
             }
             if (!in_array($path, $paths)) {
                 $paths[] = $path;
@@ -69,8 +69,8 @@ class Theme {
 
         // Lookup asset in current's theme asset path
         $fullUrl = $this->viewsPath . '/' . $baseUrl;
-        if (file_exists($fullPath = themes_path($fullUrl))) {
-            return themes_url($fullUrl) . $params;
+        if (file_exists($fullPath = semok_themes_path($fullUrl))) {
+            return semok_themes_url($fullUrl) . $params;
         }
 
         // If not found then lookup in parent's theme asset path
@@ -107,7 +107,7 @@ class Theme {
 
     public function install($clearPaths = false)
     {
-        $viewsPath = themes_path($this->viewsPath);
+        $viewsPath = semok_themes_path($this->viewsPath);
 
         if ($clearPaths) {
             if (File::exists($viewsPath)) {
@@ -129,10 +129,10 @@ class Theme {
 
     public function uninstall()
     {
-        $viewsPath = themes_path($this->viewsPath);
+        $viewsPath = semok_themes_path($this->viewsPath);
 
         // Calculate absolute paths
-        $viewsPath = themes_path($this->viewsPath);
+        $viewsPath = semok_themes_path($this->viewsPath);
 
         // Check that paths exist
         $viewsExists = File::exists($viewsPath);

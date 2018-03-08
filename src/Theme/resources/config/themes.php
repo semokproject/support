@@ -24,15 +24,6 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| Do we want a theme activated by default? Can be set at runtime with:
-	| Theme::set('theme-name');
-	|--------------------------------------------------------------------------
-	*/
-
-	'default' => null,
-
-	/*
-	|--------------------------------------------------------------------------
 	| Cache theme.json configuration files that are located in each theme's folder
 	| in order to avoid searching theme settings in the filesystem for each request
 	|--------------------------------------------------------------------------

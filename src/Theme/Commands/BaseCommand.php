@@ -54,6 +54,6 @@ class BaseCommand extends Command
         }
 
         $viewsPath = SemokTheme::find($themeName)->viewsPath;
-        return $this->files->exists(themes_path("$viewsPath/theme.json"));
+        return $this->files->exists(semok_themes_path("$viewsPath/theme.json"));
     }
 }

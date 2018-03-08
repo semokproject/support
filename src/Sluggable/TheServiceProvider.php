@@ -4,7 +4,7 @@ namespace Semok\Support\Sluggable;
 
 use Semok\Support\Sluggable\Services\SlugService;
 use Illuminate\Support\ServiceProvider;
-
+use Cocur\Slugify\Slugify;
 /**
  * Class ServiceProvider
  *
@@ -31,6 +31,10 @@ class TheServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/resources/config/sluggable.php', 'semok.sluggable');
+        
+        $this->app->singleton('semok.slugify', function () {
+            return new Slugify();
+        });
         $this->app->singleton(SluggableObserver::class, function($app) {
             return new SluggableObserver(new SlugService(), $app['events']);
         });

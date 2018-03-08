@@ -36,7 +36,7 @@ class RemoveTheme extends BaseCommand
 
         // Diaplay Warning
         if (!$force) {
-            $viewsPath = themes_path($theme->viewsPath);
+            $viewsPath = semok_themes_path($theme->viewsPath);
 
             $this->info("Warning: These folders will be deleted:");
             $this->info("- views: $viewsPath");

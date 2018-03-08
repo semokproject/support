@@ -1,78 +1,35 @@
 <?php
-if (!function_exists('themes_path')) {
-    function themes_path($filename = null) {
+if (!function_exists('semok_themes_path')) {
+    function semok_themes_path($filename = null) {
         return app()->make('semok.themes')->themes_path($filename);
     }
 }
 
-if (!function_exists('themes_url')) {
-    function themes_url($filename = null) {
+if (!function_exists('semok_themes_url')) {
+    function semok_themes_url($filename = null) {
         return app()->make('semok.themes')->themes_url($filename);
     }
 }
 
-if (!function_exists('theme_url')) {
-    function theme_url($url) {
+if (!function_exists('semok_theme_url')) {
+    function semok_theme_url($url) {
         return app()->make('semok.themes')->url($url);
     }
 }
 
-if (!function_exists('current_theme_url')) {
-	function current_theme_url($filename = null) {
-		$url = ltrim($filename, '/');
-		if (!$filename || empty(trim($url))) {
-			return url('themes/' . Theme::get());
-		}
-		return url('themes/' . Theme::get() .'/' . $url);
+if (!function_exists('semok_responsecache')) {
+	function semok_responsecache($enabled = true) {
+		app('config')->set('semok.middleware.responsecache.enabled', $enabled);
 	}
 }
 
-if (!function_exists('str_limit_words')) {
-	function str_limit_words($str, $numword = 0){
-		if (!$numword) return $str;
-		$arr_str = explode(' ', $str);
-		$arr_str = array_slice($arr_str, 0, $numword);
-		$hasil = implode(' ', $arr_str);
-		return $hasil;
-	}
-}
-
-if (!function_exists('str_slugify')) {
-	function str_slugify($string, $options = [], $limit_words = false) {
-		$defaultoptions = ['lowercase' => false];
-		if (is_array($options)) $options = array_merge($defaultoptions, $options);
-		else $options = $defaultoptions;
-		if ($limit_words) return Slugify::slugify(str_limit_words($string, $limit_words), $options);
-		return Slugify::slugify($string, $options);
-	}
-}
-
-if (!function_exists('slug_to_str')) {
-	function slug_to_str($slug) {
-		return str_replace(['-','+','.'],' ', $slug);
-	}
-}
-
-if (!function_exists('build_image64')) {
-	function build_image64($url){
-		$image = @file_get_contents($url);
-		if ($image !== false){
-			return 'data:image/jpg;base64,'.base64_encode($image);
-		}
-		return $url;
-	}
-}
-
-if (!function_exists('shuffle_with_keys')) {
-	function shuffle_with_keys(&$array) {
-		$aux = array();
-		$keys = array_keys($array);
-		shuffle($keys);
-		foreach($keys as $key) {
-			$aux[$key] = $array[$key];
-			unset($array[$key]);
-		}
-		$array = $aux;
+if (!function_exists('semok_slugify')) {
+	function semok_slugify($string, $options = []) {
+		$defaultoptions = config('semok.sluggable', []);
+		if (is_array($options)) {
+            $defaultoptions = array_merge($defaultoptions, $options);
+        }
+		return app('semok.slugify')->slugify($string, $defaultoptions);
 	}
 }
 
@@ -180,51 +137,5 @@ if (!function_exists('is_json')) {
 	function is_json($string) {
 		json_decode($string);
 		return (json_last_error() == JSON_ERROR_NONE);
-	}
-}
-
-if (!function_exists('xml_to_array')) {
-	function xml_to_array($xml) {
-		function normalizeSimpleXML($obj, &$result) {
-			$data = $obj;
-			if (is_object($data)) {
-				$data = get_object_vars($data);
-			}
-			if (is_array($data)) {
-				foreach ($data as $key => $value) {
-					$res = null;
-					normalizeSimpleXML($value, $res);
-					if (($key == '@attributes') && ($key)) {
-						$result = $res;
-					} else {
-						$result[$key] = $res;
-					}
-				}
-			} else {
-				$result = $data;
-			}
-		}
-		normalizeSimpleXML(simplexml_load_string($xml), $result);
-		return ($result);
-	}
-}
-
-if (!function_exists('str_cutter')) {
-	function str_cutter($content, $start, $end=false) {
-		if($content && $start) {
-			$r = explode($start, $content);
-			if (isset($r[1])) {
-				if($end){
-					$r = explode($end, $r[1]);
-					return $r[0];
-				}
-				return $r[1];
-			}
-			return false;
-		}elseif($content && $end){
-			$r = explode($end, $content);
-			return $r[0];
-		}
-		return false;
 	}
 }

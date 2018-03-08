@@ -23,7 +23,7 @@ class CreatePackage extends BaseCommand
         }
         $theme = SemokTheme::find($themeName);
 
-        $viewsPath = themes_path($theme->viewsPath);
+        $viewsPath = semok_themes_path($theme->viewsPath);
 
         // Packages storage path
         $packagesPath = $this->packagesPath();

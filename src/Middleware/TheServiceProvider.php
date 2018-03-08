@@ -72,11 +72,14 @@ class TheServiceProvider extends ServiceProvider
 
     protected function registerPageSpeedMiddleware()
     {
+        if (env('APP_DEBUG')) {
+            return false;
+        }
+
         $pagespeed = $this->app['config']->get('semok.middleware.pagespeed');
         if (!isset($pagespeed['enabled']) || !is_array($pagespeed['enabled']) || empty($pagespeed['enabled'])) {
             return false;
         }
-
         $pagespeed['enable'] = true;
         $this->app['config']->set(
             'laravel-page-speed',

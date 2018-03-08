@@ -35,7 +35,7 @@ class CreateTheme extends BaseCommand
         $viewsPath = $this->anticipate("Where will views be located [Default='$themeName']?", [$themeName]);
 
         // Calculate Absolute paths
-        $viewsPathFull = themes_path($viewsPath);
+        $viewsPathFull = semok_themes_path($viewsPath);
 
         // Ask for parent theme
         $parentTheme = "";
@@ -72,7 +72,7 @@ class CreateTheme extends BaseCommand
             // Create Paths + copy theme.json
             $this->files->makeDirectory($viewsPathFull);
 
-            $themeJson->saveToFile(themes_path("$viewsPath/theme.json"));
+            $themeJson->saveToFile(semok_themes_path("$viewsPath/theme.json"));
 
             // Rebuild Themes Cache
             SemokTheme::rebuildCache();

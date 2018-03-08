@@ -30,6 +30,6 @@ class ListThemes extends BaseCommand
             ));
         }
         $this->info('+----------------------+----------------------+----------------------+');
-        $this->info('Views Path is relative to: '.themes_path());
+        $this->info('Views Path is relative to: '.semok_themes_path());
     }
 }

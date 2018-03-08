@@ -159,10 +159,9 @@ class SlugService
         $maxLengthKeepWords = $config['maxLengthKeepWords'];
 
         if ($method === null) {
-            $slugEngine = $this->getSlugEngine($attribute);
-            $slug = $slugEngine->slugify($source, $separator);
+            $slug = semok_slugify($source, $config);
         } elseif (is_callable($method)) {
-            $slug = call_user_func($method, $source, $separator);
+            $slug = call_user_func($method, $source, $config);
         } else {
             throw new \UnexpectedValueException('Sluggable "method" for ' . get_class($this->model) . ':' . $attribute . ' is not callable nor null.');
         }

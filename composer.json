@@ -43,7 +43,6 @@
                 "renatomarinho/laravel-page-speed"
             ],
             "providers": [
-                "Cocur\\Slugify\\Bridge\\Laravel\\SlugifyServiceProvider",
                 "Semok\\Support\\TheServiceProvider",
                 "Semok\\Support\\Cache\\TheServiceProvider",
                 "Semok\\Support\\Log\\TheServiceProvider",
@@ -52,7 +51,6 @@
                 "Semok\\Support\\Theme\\TheServiceProvider"
             ],
             "aliases": {
-                "Slugify": "Cocur\\Slugify\\Bridge\\Laravel\\SlugifyFacade",
                 "SemokCache": "Semok\\Support\\Cache\\TheFacade",
                 "SemokLog": "Semok\\Support\\Log\\TheFacade",
                 "SemokTheme": "Semok\\Support\\Theme\\TheFacade"

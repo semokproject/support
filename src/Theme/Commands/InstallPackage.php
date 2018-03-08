@@ -44,7 +44,7 @@ class InstallPackage extends BaseCommand
         }
 
         // Target Paths
-        $viewsPath = themes_path($themeJson->get('views-path'));
+        $viewsPath = semok_themes_path($themeJson->get('views-path'));
 
         // If Views+Asset paths don't exist, move theme from temp to target paths
         if (file_exists($viewsPath)) {
