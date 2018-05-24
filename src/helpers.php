@@ -33,6 +33,20 @@ if (!function_exists('semok_slugify')) {
 	}
 }
 
+if (!function_exists('semok_collect')) {
+	function semok_collect($array) {
+        $array = (object) $array;
+        //dd($array);
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $value = semok_collect($value);
+                $array->{$key} = $value;
+            }
+        }
+        return collect($array);
+	}
+}
+
 if (!function_exists('spp_get_delim')) {
 	function spp_get_delim($ref) {
 		$search_engines = [
